@@ -19,7 +19,7 @@ namespace Assets.Scripts.DOD_Scripts.Authoring
             public override void Bake(CarSpawnerAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
-                Debug.Log($"[CarSpawnerAuthoring] Baking {authoring.carPrefab} carPrefab to Entity {entity.Index}");
+                //Debug.Log($"[CarSpawnerAuthoring] Baking {authoring.carPrefab} carPrefab to Entity {entity.Index}");
                 AddComponent(entity, new CarSpawnerComponent
                 {
                     carPrefab = GetEntity(authoring.carPrefab, TransformUsageFlags.Dynamic),

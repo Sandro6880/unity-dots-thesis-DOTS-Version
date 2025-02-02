@@ -6,8 +6,35 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: e8bcdceb1717ca641a8963bdc5ba2061
+  - enabled: 1
     path: Assets/Scenes/OOD-Scenes/CarVersion.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/OOD-Scenes/CubeVersion.unity
+    guid: 6e76d85ac432bb849a861aa9a8ae19a6
+  - enabled: 1
+    path: Assets/Scenes/OOD-Scenes/HDCarVersion.unity
+    guid: 23f7cfae007c532489639799eb0510ea
+  - enabled: 1
+    path: Assets/Scenes/DOD-Scenes/HDCarVersionDOD.unity
+    guid: b415f57eec8c51a4b96cf15597b2b1e4
+  - enabled: 1
+    path: Assets/Scenes/DOD-Scenes/CubeVersionDOD.unity
+    guid: 17d361b26294b3942b6abba03118d5bd
+  - enabled: 1
+    path: Assets/Scenes/DOD-Scenes/CarVersionDOD.unity
+    guid: b5bbe0dc1cafca44586f71059a642c1c
+  - enabled: 1
+    path: Assets/Scenes/DOD-Scenes/HDCarVersionDOD/SubSceneHDCarDOD.unity
+    guid: 970217dd64bfdc64c83b36760e21cc92
+  - enabled: 1
+    path: Assets/Scenes/DOD-Scenes/CubeVersion/CubeSubScene.unity
+    guid: fa8af0430ad25954fad88495655f2254
+  - enabled: 1
+    path: Assets/Scenes/DOD-Scenes/CarVersionDOD/SubSceneCarVersionDOD.unity
+    guid: cf235bc0f7f60d4458ca45adb9955078
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

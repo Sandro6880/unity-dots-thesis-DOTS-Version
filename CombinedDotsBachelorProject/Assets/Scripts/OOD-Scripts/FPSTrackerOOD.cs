@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.Entities;
 using UnityEngine;
 
 namespace Assets.Scripts.OOD_Scripts
 {
-    public class FPSTracker : MonoBehaviour
+    public class FPSTrackerOOD : MonoBehaviour
     {
         public CarSpawnerScript spawnAICars;
 
@@ -24,10 +25,15 @@ namespace Assets.Scripts.OOD_Scripts
 
         private Dictionary<int, string> CachedNumberStrings = new();
         private int[] _frameRateSamples;
-        private int _cacheNumbersAmount = 300;
-        private int _averageFromAmount = 30;
+        private int _cacheNumbersAmount = 600;
+        private int _averageFromAmount = 60;
         private int _averageCounter = 0;
         private int _currentAveraged;
+
+        private float _timeBelow200 = -1f;
+        private float _timeBelow100 = -1f;
+        private float _timeBelow60 = -1f;
+        private float _fpsDropThreshold = 2f;
 
         void Awake()
         {
@@ -42,7 +48,10 @@ namespace Assets.Scripts.OOD_Scripts
         }
         private void Start()
         {
-            StartCoroutine(TrackTimeElapsed());
+            //StartCoroutine(TrackTimeElapsed());
+            timeElapsedTill200FPS.text = "";
+            timeElapsedTill100FPS.text = "";
+            timeElapsedTill60FPS.text = "";
         }
         void Update()
         {
@@ -74,12 +83,56 @@ namespace Assets.Scripts.OOD_Scripts
                     var x when x < 0 => "< 0",
                     _ => "?"
                 };
-                if (spawnAICars != null)
-                {
-                    spawnCarAmountText.text = "Objects Spawned: " + spawnAICars.spawnCount.ToString();
-                }
-                
             }
+            spawnCarAmountText.text = "GameObjects Spawned: " + spawnAICars.spawnCount;
+            TrackFPSDrops();
+        }
+        private void TrackFPSDrops()
+        {
+            float timeNow = Time.time;
+
+            // 200 FPS Threshold
+            if (_currentAveraged <= 200)
+            {
+                if (_timeBelow200 < 0) _timeBelow200 = timeNow; // Start timer
+                if (timeNow - _timeBelow200 >= _fpsDropThreshold && timeElapsedTill200FPS.text == "")
+                {
+                    timeElapsedTill200FPS.text = $"Below 200 FPS for {timeNow - _timeBelow200:F1}s | {spawnCarAmountText.text}";
+                }
+            }
+            else
+            {
+                _timeBelow200 = -1f; // Reset timer if FPS recovers
+            }
+
+            // 100 FPS Threshold
+            if (_currentAveraged <= 100)
+            {
+                if (_timeBelow100 < 0) _timeBelow100 = timeNow;
+                if (timeNow - _timeBelow100 >= _fpsDropThreshold && timeElapsedTill100FPS.text == "")
+                {
+                    timeElapsedTill100FPS.text = $"Below 100 FPS for {timeNow - _timeBelow100:F1}s | {spawnCarAmountText.text}";
+                }
+            }
+            else
+            {
+                _timeBelow100 = -1f;
+            }
+
+            // 60 FPS Threshold
+            if (_currentAveraged <= 60)
+            {
+                if (_timeBelow60 < 0) _timeBelow60 = timeNow;
+                if (timeNow - _timeBelow60 >= _fpsDropThreshold && timeElapsedTill60FPS.text == "")
+                {
+                    timeElapsedTill60FPS.text = $"Below 60 FPS for {timeNow - _timeBelow60:F1}s | {spawnCarAmountText.text}";
+                }
+            }
+            else
+            {
+                _timeBelow60 = -1f;
+            }
+
         }
         public IEnumerator TrackTimeElapsed()
         {

@@ -9,7 +9,7 @@ namespace Assets.Scripts.OOD_Scripts
     {
         [SerializeField] private GameObject carPrefab;
         [SerializeField] private Transform spawnPoint;
-        [SerializeField] private float spawnInterval = 1f;
+        [SerializeField] private float spawnInterval = 0.1f;
         [SerializeField] private List<Transform> checkpoints;
         public int spawnCount = 0;
 
@@ -20,7 +20,7 @@ namespace Assets.Scripts.OOD_Scripts
 
         private IEnumerator SpawnCars()
         {
-            while (spawnCount < 10000)
+            while (spawnCount < 20000)
             {
                 GameObject car = Instantiate(carPrefab, spawnPoint.position, spawnPoint.rotation, spawnPoint);
 

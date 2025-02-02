@@ -12,7 +12,7 @@ namespace Assets.Scripts.DOD_Scripts.Authoring
             public override void Bake(CheckpointAuthoring authoring)
             {
                 var entity = GetEntity(TransformUsageFlags.None);
-                Debug.Log($"[CheckpointBaker] Baking {authoring.checkpoints.Length} checkpoints to Entity {entity.Index}");
+                //Debug.Log($"[CheckpointBaker] Baking {authoring.checkpoints.Length} checkpoints to Entity {entity.Index}");
                 var buffer = AddBuffer<CarCheckpointBuffer>(entity);
 
                 foreach (var checkpoint in authoring.checkpoints)

@@ -29,8 +29,8 @@ namespace Assets.Scripts.DOD_Scripts
             _spawnerQuery = SystemAPI.QueryBuilder().WithAll<CarSpawnerComponent>().Build();
             _checkpointQuery = SystemAPI.QueryBuilder().WithAll<CarCheckpointBuffer>().Build();
 
-            Debug.Log($"CarSpawningSystem: SpawnerQuery Count: {_spawnerQuery.CalculateEntityCount()}");
-            Debug.Log($"CarSpawningSystem: CheckpointQuery Count: {_checkpointQuery.CalculateEntityCount()}");
+            //Debug.Log($"CarSpawningSystem: SpawnerQuery Count: {_spawnerQuery.CalculateEntityCount()}");
+            //Debug.Log($"CarSpawningSystem: CheckpointQuery Count: {_checkpointQuery.CalculateEntityCount()}");
 
         }
 
@@ -50,7 +50,7 @@ namespace Assets.Scripts.DOD_Scripts
             {
                 // Spawn a new car
                 Entity newCar = state.EntityManager.Instantiate(spawner.ValueRO.carPrefab);
-                Debug.Log($"Spawned Car: {newCar}");
+                //Debug.Log($"Spawned Car: {newCar}");
                 // Set Position
 
                 /*state.EntityManager.SetComponentData(newCar, new LocalTransform
