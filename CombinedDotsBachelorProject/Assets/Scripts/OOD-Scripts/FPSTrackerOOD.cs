@@ -34,7 +34,7 @@ namespace Assets.Scripts.OOD_Scripts
         private float _timeBelow100 = -1f;
         private float _timeBelow60 = -1f;
         private float _fpsDropThreshold = 2f;
-
+        private float _sceneStartTime;
         void Awake()
         {
             // Cache strings and create array
@@ -52,6 +52,7 @@ namespace Assets.Scripts.OOD_Scripts
             timeElapsedTill200FPS.text = "";
             timeElapsedTill100FPS.text = "";
             timeElapsedTill60FPS.text = "";
+            _sceneStartTime = Time.time;
         }
         void Update()
         {
@@ -90,14 +91,14 @@ namespace Assets.Scripts.OOD_Scripts
         private void TrackFPSDrops()
         {
             float timeNow = Time.time;
-
+            float timeSinceLoad = Time.time - _sceneStartTime;
             // 200 FPS Threshold
             if (_currentAveraged <= 200)
             {
                 if (_timeBelow200 < 0) _timeBelow200 = timeNow; // Start timer
                 if (timeNow - _timeBelow200 >= _fpsDropThreshold && timeElapsedTill200FPS.text == "")
                 {
-                    timeElapsedTill200FPS.text = $"Below 200 FPS for {timeNow - _timeBelow200:F1}s in {Time.time:F1}s| {spawnCarAmountText.text}";
+                    timeElapsedTill200FPS.text = $"Below 200 FPS for {timeNow - _timeBelow200:F1}s in {timeSinceLoad:F1}s| {spawnCarAmountText.text}";
                 }
             }
             else
@@ -111,7 +112,7 @@ namespace Assets.Scripts.OOD_Scripts
                 if (_timeBelow100 < 0) _timeBelow100 = timeNow;
                 if (timeNow - _timeBelow100 >= _fpsDropThreshold && timeElapsedTill100FPS.text == "")
                 {
-                    timeElapsedTill100FPS.text = $"Below 100 FPS for {timeNow - _timeBelow100:F1}s in {Time.time:F1}s| {spawnCarAmountText.text}";
+                    timeElapsedTill100FPS.text = $"Below 100 FPS for {timeNow - _timeBelow100:F1}s in {timeSinceLoad:F1}s| {spawnCarAmountText.text}";
                 }
             }
             else
@@ -125,7 +126,7 @@ namespace Assets.Scripts.OOD_Scripts
                 if (_timeBelow60 < 0) _timeBelow60 = timeNow;
                 if (timeNow - _timeBelow60 >= _fpsDropThreshold && timeElapsedTill60FPS.text == "")
                 {
-                    timeElapsedTill60FPS.text = $"Below 60 FPS for {timeNow - _timeBelow60:F1}s in {Time.time:F1}s| {spawnCarAmountText.text}";
+                    timeElapsedTill60FPS.text = $"Below 60 FPS for {timeNow - _timeBelow60:F1}s in {timeSinceLoad:F1}s| {spawnCarAmountText.text}";
                 }
             }
             else
