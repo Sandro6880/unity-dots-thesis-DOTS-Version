@@ -32,7 +32,7 @@ namespace Assets.Scripts.OOD_Scripts
         private float _timeBelow200 = -1f;
         private float _timeBelow100 = -1f;
         private float _timeBelow60 = -1f;
-        private float _fpsDropThreshold = 2f;
+        private float _fpsDropThreshold = 1f;
         private float _sceneStartTime;
         void Awake()
         {

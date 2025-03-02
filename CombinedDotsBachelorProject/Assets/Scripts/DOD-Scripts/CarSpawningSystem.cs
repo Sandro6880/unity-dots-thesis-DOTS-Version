@@ -37,7 +37,7 @@ namespace Assets.Scripts.DOD_Scripts
         public void OnUpdate(ref SystemState state)
         {
             _timer += SystemAPI.Time.DeltaTime;
-            if (_timer < 0.1) return; // Adjust spawn time
+            if (_timer < 0.01) return; // Adjust spawn time
             _timer = 0f;
             if (_checkpointQuery.IsEmpty)
             {
