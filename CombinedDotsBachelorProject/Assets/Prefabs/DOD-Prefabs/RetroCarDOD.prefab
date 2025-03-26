@@ -314,6 +314,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3667211753972221885}
   - component: {fileID: 6689215325015715644}
+  - component: {fileID: 3142637747538741369}
   m_Layer: 0
   m_Name: RetroCarDOD
   m_TagString: Untagged
@@ -354,6 +355,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+--- !u!64 &3142637747538741369
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3638911070570068518}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &4576468817563483559
 GameObject:
   m_ObjectHideFlags: 0
