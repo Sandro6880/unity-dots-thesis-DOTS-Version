@@ -2,11 +2,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Entities;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
 namespace Assets.Scripts.OOD_Scripts
@@ -34,6 +36,15 @@ namespace Assets.Scripts.OOD_Scripts
         private float _timeBelow60 = -1f;
         private float _fpsDropThreshold = 1f;
         private float _sceneStartTime;
+        int carEntities = 0;
+
+        public string currentCondition;
+        private string filePath;
+        private List<string> conditions = new List<string> { "Cube", "Car_low", "Car_mid", "Car_high", "Car_Prediction" };
+        private Dictionary<string, List<float>> fpsData = new Dictionary<string, List<float>>();
+        private bool isDone = false;
+        private bool isInside = false;
+        private int previousObjectCount = 0;
         void Awake()
         {
             // Cache strings and create array
@@ -47,10 +58,12 @@ namespace Assets.Scripts.OOD_Scripts
         }
         private void Start()
         {
-            timeElapsedTill200FPS.text = "";
+            /*timeElapsedTill200FPS.text = "";
             timeElapsedTill100FPS.text = "";
-            timeElapsedTill60FPS.text = "";
+            timeElapsedTill60FPS.text = "";*/
             _sceneStartTime = Time.time;
+            filePath = "D:\\Bachelor\\dod_car_fps_data.csv";
+            InitializeCSV();
         }
         void Update()
         {
@@ -89,7 +102,13 @@ namespace Assets.Scripts.OOD_Scripts
         }
         private void TrackFPSDrops()
         {
-            float timeNow = Time.time;
+            if (carEntities != 0 && carEntities % 100 == 0 && !isInside)
+            {
+                isInside = true;
+                LogFPS(currentCondition, _currentAveraged, carEntities);
+                isInside = false;
+            }
+            /*float timeNow = Time.time;
             float timeSinceLoad = Time.time - _sceneStartTime;
             // 200 FPS Threshold
             if (_currentAveraged <= 200)
@@ -131,7 +150,7 @@ namespace Assets.Scripts.OOD_Scripts
             else
             {
                 _timeBelow60 = -1f;
-            }
+            }*/
 
         }
         private void CalculateEntityCount()
@@ -139,14 +158,70 @@ namespace Assets.Scripts.OOD_Scripts
             var entityManager = World.DefaultGameObjectInjectionWorld.EntityManager;
 
             // Get total number of entities
-            int totalEntities = entityManager.UniversalQuery.CalculateEntityCount() - 4; // -4 due to already existing entities in Subscene / scene
+            //int totalEntities = entityManager.UniversalQuery.CalculateEntityCount() - 4; // -4 due to already existing entities in Subscene / scene
 
             // Count only entities that have CarComponent
             EntityQuery carQuery = entityManager.CreateEntityQuery(typeof(CarComponent));
-            int carEntities = carQuery.CalculateEntityCount();
+            carEntities = carQuery.CalculateEntityCount();
 
-            spawnCarAmountText.text = "Total Entities Spawned: " + totalEntities.ToString() 
-                + " | CarComponent Entities spawned: " + carEntities;
+            spawnCarAmountText.text = "CarComponent Entities spawned: " + carEntities;
+        }
+        void InitializeCSV()
+        {
+            if (!File.Exists(filePath))
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    // Write the header
+                    writer.Write("Object");
+                    for (int i = 100; i <= 10000; i += 100) // Adjust if needed
+                    {
+                        writer.Write($";{i}");
+                    }
+                    writer.WriteLine();
+                }
+            }
+
+            // Initialize FPS tracking dictionary
+            foreach (string condition in conditions)
+            {
+                fpsData[condition] = new List<float>();
+            }
+        }
+
+        public void LogFPS(string condition, float fps, int objectCount)
+        {
+            if (!fpsData.ContainsKey(condition)) return;
+
+            if (!isDone && previousObjectCount != objectCount)
+            {
+                previousObjectCount = objectCount;
+                fpsData[condition].Add(fps);
+                if (objectCount >= 10000) // Adjust based on the max tracked count
+                {
+                    isDone = true;
+                    WriteToCSV();
+                }
+            }
+        }
+
+        void WriteToCSV()
+        {
+            using (StreamWriter writer = new StreamWriter(filePath, true))
+            {
+                writer.Write(currentCondition);
+                foreach (var fps in fpsData[currentCondition])
+                {
+                    writer.Write($";{fps}");
+                }
+                writer.WriteLine();
+            }
+
+            // Clear data after writing
+            foreach (var key in fpsData.Keys)
+            {
+                fpsData[key].Clear();
+            }
         }
     }
 }

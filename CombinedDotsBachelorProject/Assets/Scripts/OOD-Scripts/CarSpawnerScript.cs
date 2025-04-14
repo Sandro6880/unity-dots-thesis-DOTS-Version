@@ -26,7 +26,7 @@ namespace Assets.Scripts.OOD_Scripts
 
         private IEnumerator SpawnCars()
         {
-            while (spawnCount < 200000)
+            while (spawnCount < 10005)
             {
                 GameObject car = Instantiate(carPrefab, spawnPoint.position, spawnPoint.rotation, spawnPoint);
 

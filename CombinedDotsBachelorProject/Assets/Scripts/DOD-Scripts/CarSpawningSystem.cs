@@ -9,6 +9,7 @@ using UnityEngine;
 using System.Linq;
 using System.Globalization;
 using Unity.Rendering;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.DOD_Scripts
 {
@@ -18,8 +19,10 @@ namespace Assets.Scripts.DOD_Scripts
         private EntityQuery _spawnerQuery;
         private EntityQuery _checkpointQuery;
         private float _timer;
+        public int amountOfObjects;
         Entity checkpointEntity;
         EntityCommandBuffer ecb;
+        private int lastSceneIndex;
         public void OnCreate(ref SystemState state)
         {
             // Require CarSpawnerComponent and at least one CarCheckpointBuffer
@@ -28,17 +31,26 @@ namespace Assets.Scripts.DOD_Scripts
 
             _spawnerQuery = SystemAPI.QueryBuilder().WithAll<CarSpawnerComponent>().Build();
             _checkpointQuery = SystemAPI.QueryBuilder().WithAll<CarCheckpointBuffer>().Build();
-
+            amountOfObjects = 0;
             //Debug.Log($"CarSpawningSystem: SpawnerQuery Count: {_spawnerQuery.CalculateEntityCount()}");
             //Debug.Log($"CarSpawningSystem: CheckpointQuery Count: {_checkpointQuery.CalculateEntityCount()}");
 
         }
-
         public void OnUpdate(ref SystemState state)
         {
+            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+            // Reset counter if we detect a scene change
+            if (currentSceneIndex != lastSceneIndex)
+            {
+                lastSceneIndex = currentSceneIndex;
+                amountOfObjects = 0;
+            }
+
             _timer += SystemAPI.Time.DeltaTime;
-            if (_timer < 0.01) return; // Adjust spawn time
+            if (_timer < 0.01 || amountOfObjects > 10005) return; // Adjust spawn time
             _timer = 0f;
+
             if (_checkpointQuery.IsEmpty)
             {
                 _checkpointQuery = SystemAPI.QueryBuilder().WithAll<CarCheckpointBuffer>().Build();
@@ -50,6 +62,7 @@ namespace Assets.Scripts.DOD_Scripts
             {
                 // Spawn a new car
                 Entity newCar = state.EntityManager.Instantiate(spawner.ValueRO.carPrefab);
+                amountOfObjects++;
                 //Debug.Log($"Spawned Car: {newCar}");
                 // Set Position
 

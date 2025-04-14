@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abbe6e21cdf383b4dafe8a31ff2525ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carPrefab: {fileID: 8446217500925931561, guid: 12144d681d427064c91da7a80f41b4bc, type: 3}
+  carPrefab: {fileID: 8446217500925931561, guid: 835cc1ba46acef54d88f439cc06ec847, type: 3}
   spawnPoint: {fileID: 19160621}
   spawnInterval: 0.1
   checkpoints:
@@ -563,7 +563,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.42261827, y: 0, z: 0, w: 0.9063079}
-  m_LocalPosition: {x: 0, y: 50, z: -9}
+  m_LocalPosition: {x: 0, y: 50, z: 35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1756,6 +1756,7 @@ MonoBehaviour:
   trackTill100FPS: 0
   timeElapsedTill60FPS: {fileID: 1489401217}
   trackTill60FPS: 0
+  currentCondition: Cube
 --- !u!1 &2002514348
 GameObject:
   m_ObjectHideFlags: 0

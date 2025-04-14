@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,11 +31,21 @@ namespace Assets.Scripts.OOD_Scripts
         private int _averageCounter = 0;
         private int _currentAveraged;
 
-        private float _timeBelow200 = -1f;
+        /*private float _timeBelow200 = -1f;
         private float _timeBelow100 = -1f;
         private float _timeBelow60 = -1f;
-        private float _fpsDropThreshold = 1f;
+        private float _fpsDropThreshold = 1f;*/
         private float _sceneStartTime;
+
+        //CSV
+        //Cube, Car_low, Car_mid, Car_high
+        public string currentCondition;
+        private string filePath;
+        private List<string> conditions = new List<string> { "Cube", "Car_low", "Car_mid", "Car_high", "Car_Prediction" };
+        private Dictionary<string, List<float>> fpsData = new Dictionary<string, List<float>>();
+        private bool isDone = false;
+        private bool isInside = false;
+        private int previousObjectCount = 0;
         void Awake()
         {
             // Cache strings and create array
@@ -48,10 +59,8 @@ namespace Assets.Scripts.OOD_Scripts
         }
         private void Start()
         {
-            //StartCoroutine(TrackTimeElapsed());
-            timeElapsedTill200FPS.text = "";
-            timeElapsedTill100FPS.text = "";
-            timeElapsedTill60FPS.text = "";
+            filePath = "D:\\Bachelor\\ood_car_fps_data.csv";
+            InitializeCSV();
             _sceneStartTime = Time.time;
         }
         void Update()
@@ -90,10 +99,16 @@ namespace Assets.Scripts.OOD_Scripts
         }
         private void TrackFPSDrops()
         {
-            float timeNow = Time.time;
-            float timeSinceLoad = Time.time - _sceneStartTime;
-            // 200 FPS Threshold
-            if (_currentAveraged <= 200)
+            //float timeNow = Time.time;
+            //float timeSinceLoad = Time.time - _sceneStartTime;
+            //
+            if (spawnAICars.spawnCount != 0 && spawnAICars.spawnCount % 100 == 0 && !isInside)
+            {
+                isInside = true;
+                LogFPS(currentCondition, _currentAveraged, spawnAICars.spawnCount);
+                isInside = false;
+            }
+            /*if (_currentAveraged <= 200)
             {
                 if (_timeBelow200 < 0) _timeBelow200 = timeNow; // Start timer
                 if (timeNow - _timeBelow200 >= _fpsDropThreshold && timeElapsedTill200FPS.text == "")
@@ -132,8 +147,68 @@ namespace Assets.Scripts.OOD_Scripts
             else
             {
                 _timeBelow60 = -1f;
+            }*/
+
+        }
+
+        void InitializeCSV()
+        {
+            if (!File.Exists(filePath))
+            {
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    // Write the header
+                    writer.Write("Object");
+                    for (int i = 100; i <= 10000; i += 100) // Adjust if needed
+                    {
+                        writer.Write($";{i}");
+                    }
+                    writer.WriteLine();
+                }
             }
 
+            // Initialize FPS tracking dictionary
+            foreach (string condition in conditions)
+            {
+                fpsData[condition] = new List<float>();
+            }
+        }
+
+        public void LogFPS(string condition, float fps, int objectCount)
+        {
+            if (!fpsData.ContainsKey(condition)) return;
+
+            if (!isDone && previousObjectCount != objectCount)
+            {
+                previousObjectCount = objectCount;
+                fpsData[condition].Add(fps);
+
+                if (objectCount >= 10000) // Adjust based on the max tracked count
+                {
+                    isDone = true;
+                    WriteToCSV();
+                }
+            }
+        }
+
+        void WriteToCSV()
+        {
+            using (StreamWriter writer = new StreamWriter(filePath, true))
+            {
+                writer.Write(currentCondition);
+                foreach (var fps in fpsData[currentCondition])
+                {
+                    writer.Write($";{fps}");
+                }
+                writer.WriteLine();
+              
+            }
+
+            // Clear data after writing
+            foreach (var key in fpsData.Keys)
+            {
+                fpsData[key].Clear();
+            }
         }
         public IEnumerator TrackTimeElapsed()
         {
